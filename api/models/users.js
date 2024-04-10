@@ -23,9 +23,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ['donor', 'organization', 'admin' ],
   },
+  fileInfo: {
+    type: String,
+    default: "",
+    validate: {
+      validator: function(value) {
+        return this.userType !== 'organization' || (this.userType === 'organization' && value.trim() !== "");
+      },
+      message: 'File information is required for organization users',
+    },
+  },
   isVerified: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 }, { timestamps: true });
 
