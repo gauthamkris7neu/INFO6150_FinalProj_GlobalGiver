@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const userRoutes = require('./routes/userRoutes');
 
 
 const connectionURI = 'mongodb+srv://Cluster56903:cH5IbVhmcVRB@cluster56903.xggsri8.mongodb.net/globalGivers?retryWrites=true&w=majority'
@@ -23,6 +24,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'] 
 }));
+
+app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
