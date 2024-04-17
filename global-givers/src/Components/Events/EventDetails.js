@@ -1,11 +1,19 @@
 import React from 'react';
-import { Paper, Typography, Divider, Button } from '@mui/material';
+import { Paper, Typography, Divider, Button, CardMedia } from '@mui/material';
 
 const EventDetails = ({ event }) => {
-  const { title, date, location, description } = event;
+  const { title, date, location, description, imageUrl } = event;  // Assuming 'imageUrl' holds the URL to the event image
 
   return (
     <Paper elevation={3} sx={{ p: 2, maxWidth: 600, margin: 'auto' }}>
+      {imageUrl && (
+        <CardMedia
+          component="img"
+          height="240"
+          image={imageUrl}
+          alt={`Image for ${title}`}
+        />
+      )}
       <Typography variant="h5" gutterBottom>
         {title}
       </Typography>
