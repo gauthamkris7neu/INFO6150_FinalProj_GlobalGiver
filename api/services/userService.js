@@ -1,6 +1,8 @@
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 const fullNameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
+const eventNameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
+const donationRegex = /^\d+(\.\d{1,2})?$/;
 
 
 const validateInput = (email, fullName, password) => {
@@ -17,6 +19,18 @@ const validateInput = (email, fullName, password) => {
     return validationErrors;
 }
 
+const validateEvent = (eventName, donationNeeded, donationReceived) => {
+    const validationErrors = {};
+    if (!eventNameRegex.test(eventName)) {
+        validationErrors.eventName = 'Invalid Event Name format';
+    }
+    if (!donationRegex.test(donationNeeded) || !donationRegex.test(donationReceived)) {
+        validationErrors.donationNeeded = 'Donation Amount can only contain numbers';
+    }
+    return validationErrors;
+}
+
 module.exports = {
-    validateInput
+    validateInput,
+    validateEvent
 };
