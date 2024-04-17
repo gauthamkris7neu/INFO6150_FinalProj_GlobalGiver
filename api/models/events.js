@@ -31,7 +31,7 @@ const eventSchema = new mongoose.Schema({
   },
   donationReceived: {
     type: Number,
-    required: true,
+    default: 0
   },
   eventType: {
     type: String,

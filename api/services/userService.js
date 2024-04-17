@@ -19,13 +19,13 @@ const validateInput = (email, fullName, password) => {
     return validationErrors;
 }
 
-const validateEvent = (eventName, donationNeeded, donationReceived) => {
+const validateEvent = (eventName, donation) => {
     const validationErrors = {};
     if (!eventNameRegex.test(eventName)) {
         validationErrors.eventName = 'Invalid Event Name format';
     }
-    if (!donationRegex.test(donationNeeded) || !donationRegex.test(donationReceived)) {
-        validationErrors.donationNeeded = 'Donation Amount can only contain numbers';
+    if (!donationRegex.test(donation)) {
+        validationErrors.donation = 'Donation Amount can only contain numbers';
     }
     return validationErrors;
 }
