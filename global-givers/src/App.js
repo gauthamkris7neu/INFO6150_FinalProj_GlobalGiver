@@ -1,34 +1,29 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
-// Import your components
-import Login from './landingpage/login';
-import Register from './landingpage/register';
-import UserDashboard from './user/UserDashboard';
-import OrgDashboard from './organization/OrgDashboard';
-import EditProfile from './user/EditProfile';
-import PostEvent from './organization/PostEvent';
-import EventsList from './user/EventsList';
-import OrganizationsList from './user/OrganizationsList';
-
-function App() {
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './Components/Common/Navbar';
+import Home from './Pages/Home';
+import Events from './Pages/Events';
+import Donations from './Pages/Donations';
+import Profile from './Pages/Profile';
+import EventDetails from './Components/Events/EventDetails';
+import DonationForm from './Components/donations/DonationForm';
+import DonationList from './Components/donations/DonationList';
+ 
+const App = () => {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Login />} exact />
-          <Route path="/register" element={<Register />} />
-          <Route path="/user-dashboard" element={<UserDashboard />} />
-          <Route path="/org-dashboard" element={<OrgDashboard />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/post-event" element={<PostEvent />} />
-          <Route path="/events-list" element={<EventsList />} />
-          <Route path="/organizations-list" element={<OrganizationsList />} />
-          {/* Add additional routes as needed */}
-        </Routes>
-      </div>
-    </Router>
+<Router>
+<Navbar />
+<Routes>
+<Route path="/" element={<Home />} />
+<Route path="/events" element={<Events />} />
+<Route path="/events/:id" element={<EventDetails />} />
+<Route path="/donations" element={<Donations />} />
+<Route path="/donations/form" element={<DonationForm />} />
+<Route path="/donations/list" element={<DonationList />} />
+<Route path="/profile" element={<Profile />} />
+</Routes>
+</Router>
   );
-}
+};
 
 export default App;
