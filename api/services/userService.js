@@ -7,13 +7,13 @@ const donationRegex = /^\d+(\.\d{1,2})?$/;
 
 const validateInput = (email, fullName, password) => {
     const validationErrors = {};
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email) && email) {
         validationErrors.email = 'Invalid email format';
     }
-    if (!fullNameRegex.test(fullName)) {
+    if (!fullNameRegex.test(fullName) && fullName) {
         validationErrors.fullName = 'Full name can only contain letters, spaces, apostrophes, hyphens, and periods';
     }
-    if (!passwordRegex.test(password)) {
+    if (!passwordRegex.test(password) && password) {
         validationErrors.password = 'Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one number';
     }
     return validationErrors;
