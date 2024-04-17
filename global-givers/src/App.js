@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './Components/Common/Navbar';  // Ensure paths are correctly cased
+import Footer from './Components/Common/Footer';
 import Home from './Pages/Home';                 // Lowercase 'p' in pages for consistency
 import Events from './Pages/Events';
 import Donations from './Pages/Donations';
@@ -28,8 +29,14 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
 
 export default App;
+
+
+
+
+
