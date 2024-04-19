@@ -10,9 +10,17 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  location: {
+  address: {
     type: String,
     required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true,
   },
   dateTime: {
     type: Date,
@@ -24,6 +32,7 @@ const eventSchema = new mongoose.Schema({
   },
   rsvp: [{
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }],
   donationNeeded: {
     type: Number,

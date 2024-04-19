@@ -9,7 +9,7 @@ const JWT_SECRET = 'yourSecretKey';
 const createEvent = async (req, res) => {
 
     console.log(req.body);
-    const { eventName, description, location, dateTime, organizer,  donationNeeded, eventType, eventImage } = req.body;
+    const { eventName, description, address, city, state, dateTime, organizer,  donationNeeded, eventType, eventImage } = req.body;
     try {
         // Validation
         const validationErrors = userService.validateEvent(eventName, donationNeeded);
@@ -34,8 +34,7 @@ const createEvent = async (req, res) => {
         }
 
         // Creating new event
-        const newEventDetails = { eventName, description, location, dateTime, organizer : organizerUser.fullName, donationNeeded, eventType, eventImage: req.file.path };
-
+        const newEventDetails = { eventName, description, address, city, state, dateTime, organizer : organizerUser.fullName, donationNeeded, eventType, eventImage: req.file.path };
         const newEvent = new Events(newEventDetails);
         await newEvent.save(); 
         res.status(201).json({ message: 'Event created successfully' });
@@ -52,7 +51,6 @@ const getAllEvents = async (req, res) => {
         // Assuming 'Events' is the Mongoose model for events
         const eventOrganizer = await Events.findOne({ organizer });
         const currentDate = new Date();
-
         if (!eventOrganizer) {
             return res.status(400).json({ message: "You are not an Organizer" });
         }
