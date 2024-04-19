@@ -56,8 +56,55 @@ const userLogin = async (req, res) => {
     }
 };
 
+const editUser = async (req, res) => {
+    const { fullName, email, password } = req.body;
+    const validationErrors = userService.validateInput(email, fullName, password);
+    if (Object.keys(validationErrors).length) {
+        return res.status(400).json({ errors: validationErrors });
+    }
+    try {
+        const user = await Users.findOne({ email });
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (user.userType !== 'organization') {
+            user.fullName = fullName;
+        } else {
+            return res.status(401).json({ message: 'Organization cannot edit full name' });
+        }
+        if(password) {
+            user.password = password;
+        }
+        await user.save();
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }    
+}
+
+const forgotPassword = async (req, res) => {
+    const { email, password } = req.body;
+    const validationErrors = userService.validateInput(email, null, password);
+    if (Object.keys(validationErrors).length) {
+        return res.status(400).json({ errors: validationErrors });
+    }
+    try {
+        const user = await Users.findOne({ email });
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.password = password;
+        await user.save();
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating password', error: error.message });
+    }
+}
+
 
 module.exports = {
     create,
-    userLogin
+    userLogin,
+    editUser,
+    forgotPassword
 };

@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
       message: 'File information is required for organization users',
     },
   },
+  registeredEvents: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event'
+  }],
   isVerified: {
     type: Boolean,
     default: true,
