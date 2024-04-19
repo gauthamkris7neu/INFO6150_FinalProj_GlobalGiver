@@ -8,5 +8,6 @@ router.get('/getRegisteredEvents', upload.none(), eventController.getRegisteredE
 router.post('/register', upload.none(), eventController.registerUserForEvent);
 router.post('/unregister', upload.none(), eventController.unregisterUserForEvent);
 router.post('/:eventId/donate', upload.none(), eventController.userDonation);
+router.get('/getAllEventsByLocation', upload.none(), eventController.getAllEventsByLocation);
 
 module.exports = router;

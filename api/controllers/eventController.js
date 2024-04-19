@@ -93,9 +93,26 @@ const userDonation = async (req, res) => {
     } 
 };
 
+const getAllEventsByLocation = async (req, res) => {
+    const { city, state } = req.body;
+    try {
+        // Assuming 'Events' is the Mongoose model for events
+        const events = await Events.find({
+            city: { $regex: new RegExp(city, 'i') }, // 'i' flag makes the regex case-insensitive
+            state: { $regex: new RegExp(state, 'i') }
+        });
+        res.status(200).json({ events });
+    } catch (error) {
+        console.error("Error fetching events by location:", error);
+        res.status(500).json({ message: 'Error fetching events by location', error: error.message });
+    }
+};
+
+
 module.exports = {
     registerUserForEvent,
     unregisterUserForEvent,
     getRegisteredEvents,
-    userDonation
+    userDonation,
+    getAllEventsByLocation
 };
