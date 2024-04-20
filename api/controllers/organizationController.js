@@ -46,17 +46,17 @@ const createEvent = async (req, res) => {
 };
 
 const getAllEvents = async (req, res) => {
-    const { organizer } = req.body;
+    const { email } = req.query;
     try {
         // Assuming 'Events' is the Mongoose model for events
-        const eventOrganizer = await Events.findOne({ organizer });
+        const eventOrganizer = await Users.findOne({ email });
         const currentDate = new Date();
         if (!eventOrganizer) {
             return res.status(400).json({ message: "You are not an Organizer" });
         }
 
         // Organizer found, now retrieve events for this organizer
-        const events = await Events.find({ organizer, dateTime: { $gt: currentDate }  });
+        const events = await Events.find({ organizer: eventOrganizer.fullName, dateTime: { $gt: currentDate }  });
 
         // Send events back to the client
         res.status(200).json({ events });

@@ -31,7 +31,6 @@ const create = async (req, res) => {
 }
 
 const userLogin = async (req, res) => {
-    console.log(req.body);
     const { email, password } = req.body;
     try {
         const user = await Users.findOne({ email });
