@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Grid, FormControl, InputLabel
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../Actions/actions';
+// import { login } from '../../actions/loginActions';
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -28,7 +28,7 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:8000/api/users/login',  credentials);
       if (response.data) {
-        dispatch(setUser({userType: response.data.userType, email: credentials.email}));
+        dispatch(login({email: credentials.email, userType: response.data.userType}));
         navigate('/');
       }
   } catch (err) {
