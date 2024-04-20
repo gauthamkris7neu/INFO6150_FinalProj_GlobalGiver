@@ -1,43 +1,83 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom'
+import { AppBar, Toolbar, Typography, Button, IconButton, useTheme } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import logo from '../../Components/assets/GG Logo 1.png';
 
 const Navbar = ({ isLoggedIn, handleLogout, userType }) => {
+  const renderLinkButton = (text, to, style, onClick) => (
+    <Button color="inherit" component={RouterLink} to={to} onClick={onClick} sx={style}>
+      {text}
+    </Button>
+  );
+
+  const theme = useTheme();
+
+  const styles = {
+    appBar: {
+      backgroundColor: '#003366',
+      boxShadow: theme.shadows[4],
+    },
+    logoButton: {
+      marginRight: theme.spacing(2),
+    },
+    logo: {
+      height: '35px',
+    },
+    title: {
+      flexGrow: 1,
+      fontWeight: 600,
+    },
+    button: {
+      margin: theme.spacing(1),
+      '&:hover': {
+        backgroundColor: '#003366',
+      },
+    },
+  };
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={styles.appBar}>
       <Toolbar>
-        {/* Logo as Home button */}
-        <IconButton edge="start" color="inherit" aria-label="home" component={RouterLink} to="/" sx={{ mr: 2 }}>
-          <img src={logo} alt="Global Givers Logo" style={{ height: '48px' }} />
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="home"
+          component={RouterLink}
+          to="/"
+          sx={styles.logoButton}
+        >
+          <img src={logo} alt="Global Givers Logo" style={styles.logo} />
         </IconButton>
-        {/* Title next to logo */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={styles.title}>
           Global Givers
         </Typography>
-        {/* Conditionally render Navigation Links based on user type */}
-        <Button color="inherit" component={RouterLink} to="/">Home</Button>
+        {renderLinkButton("Home", "/", styles.button)}
         {userType === 'organization' ? (
           <>
-            <Button color="inherit" component={RouterLink} to="/events/manage">Manage Events</Button>
-            <Button color="inherit" component={RouterLink} to="/donations/manage">Manage Donations</Button>
+            {renderLinkButton("Manage Events", "/events/manage", styles.button)}
+            {renderLinkButton("Manage Donations", "/donations/manage", styles.button)}
           </>
         ) : (
           <>
-            <Button color="inherit" component={RouterLink} to="/events">Events</Button>
-            <Button color="inherit" component={RouterLink} to="/donations">Donations</Button>
-            <Button color="inherit" component={RouterLink} to="/profile">Profile</Button>
           </>
         )}
-        {/* Authentication Buttons */}
         {isLoggedIn ? (
-          <Button color="inherit" onClick={handleLogout}>Logout</Button>
+          <>
+            {userType !== 'admin' ? (
+              <>
+                {renderLinkButton("Events", "/events", styles.button)}
+                {renderLinkButton("Profile", "/profile", styles.button)}
+              </>)
+              : (<></>)}
+            {renderLinkButton("Logout", "#", styles.button, handleLogout)}
+          </>
         ) : (
           <>
-            <Button color="inherit" component={RouterLink} to="/login">Login</Button>
-            <Button color="inherit" component={RouterLink} to="/register">Register</Button>
+            {renderLinkButton("Login", "/login", styles.button)}
+            {renderLinkButton("Register", "/register", styles.button)}
           </>
         )}
+
       </Toolbar>
     </AppBar>
   );

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography, Avatar, Button, Tab, Tabs, Box, TextField, Grid } from '@mui/material';
+import { Paper, Typography, Avatar, Button, Tab, Tabs, Box, TextField, Grid,  List, ListItem, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
-// import TabPanel from './TabPanel'; // A component for rendering tab panels
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -28,61 +30,87 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   height: theme.spacing(12),
   marginBottom: theme.spacing(1)
 }));
-const initialProfileData = {
-  individual: {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    bio: 'Passionate volunteer and community contributor',
-    avatarUrl: 'path-to-individual-avatar.png',
-    userType: 'individual'
-  },
-  organization: {
-    name: 'Helpful Hands',
-    bio: 'Dedicated to helping through action and funding',
-    avatarUrl: 'path-to-organization-avatar.png',
-    userType: 'organization'
-  }
-};
+
 function Profile() {
-  const [profileData, setProfileData] = useState(initialProfileData['organization']); // Default to individual
+  const [profileData, setProfileData] = useState({});
   const [value, setValue] = useState(0);
+  const [events, setEvents] = useState([]);
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
+  const { user } = useSelector(state => state.login);
+  const userType = user ? user.userType : null;
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/events/getRegisteredEvents', {
+          params: {email: user.email}
+        });
+        setEvents(response.data);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      }
+    };
+    const fetchUsers = async () => {
+        try {
+          const response = await axios.get('http://localhost:8000/api/users/getUserInfo', {
+            params: { email: user.email }
+          });
+          setProfileData(response.data.user);
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
+        }
+    };
+    fetchUsers();
+    fetchEvents();
+}, []);
+
+const now = new Date();
+
+const pastEvents = events.filter(event => 
+  new Date(event.dateTime) < now
+);
+
+const upcomingEvents = events.filter(event => 
+  new Date(event.dateTime) >= now
+);
+
+console.log('Past events:', pastEvents);
+console.log('Upcoming events:', upcomingEvents);
   return (
     <Paper elevation={3} sx={{ p: 2, maxWidth: 800, margin: 'auto' }}>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
-          <StyledAvatar alt={profileData.name} src={profileData.avatarUrl} />
+          <StyledAvatar alt={profileData.fullName} src={profileData.avatarUrl} />
         </Grid>
         <Grid item xs>
-          <Typography variant="h5">{profileData.name}</Typography>
-          <Typography variant="body1">{profileData.bio}</Typography>
+          <Typography variant="h5">{profileData.fullName}</Typography>
+          <Typography variant="body1">{profileData.email}</Typography>
         </Grid>
       </Grid>
       <Tabs value={value} onChange={handleTabChange} aria-label="Profile Tabs">
         <Tab label="Past Activity" />
         <Tab label="Upcoming Events" />
-        {profileData.userType === 'organization' && <Tab label="Post Event" />}
       </Tabs>
       <TabPanel value={value} index={0}>
-        {/* Display past donations or participations */}
-        Past activities go here...
+        <List>
+          {pastEvents.map(event => (
+            <ListItem key={event._id}>
+              <ListItemText primary={event.eventName} secondary={format(parseISO(event.dateTime), 'PPPp')} />
+            </ListItem>
+          ))}
+        </List>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {/* Display upcoming registered events or organization events */}
-        Upcoming events go here...
+        <List>
+          {upcomingEvents.map(event => (
+            <ListItem key={event._id}>
+              <ListItemText primary={event.eventName} secondary={format(parseISO(event.dateTime), 'PPPp')} />
+            </ListItem>
+          ))}
+        </List>
       </TabPanel>
-      {profileData.userType === 'organization' && (
-        <TabPanel value={value} index={2}>
-          {/* Form for organizations to post new events */}
-          <Typography variant="h6">Post a New Event</Typography>
-          <TextField fullWidth label="Event Name" variant="outlined" sx={{ mb: 2 }} />
-          <TextField fullWidth label="Date and Time" type="datetime-local" InputLabelProps={{ shrink: true }} variant="outlined" sx={{ mb: 2 }} />
-          <TextField fullWidth label="Description" multiline rows={4} variant="outlined" sx={{ mb: 2 }} />
-          <Button variant="contained" color="primary">Submit Event</Button>
-        </TabPanel>
-      )}
     </Paper>
   );
 }

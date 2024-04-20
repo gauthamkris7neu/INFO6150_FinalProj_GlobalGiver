@@ -1,38 +1,84 @@
 import React from 'react';
 import { Typography, Button, Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 
 const Home = () => {
   const navigate = useNavigate();
+  const { loggedIn } = useSelector(state => state.login);
   const imageCount = 5;
   const images = Array.from({ length: imageCount }, (_, i) => `/images/Image${i + 1}.png`);
-
-  const handleDonateClick = () => {
-    navigate('/donations'); // Redirect to the donations page
+  
+  const styles = {
+    root: {
+      padding: '20px',
+    },
+    donateButton: {
+      position: 'absolute', 
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)'
+    },
+    donateBox: {
+      width: '100%', 
+      height: 300, 
+      backgroundColor: 'grey', 
+      mt: 2, 
+      position: 'relative',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    },
+    eventsBox: {
+      width: '100%', 
+      height: 300, 
+      backgroundColor: 'grey', 
+      mt: 2, 
+      position: 'relative',
+      backgroundImage: 'url("/bgImages/eventsBackground.webp")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    },
+    imageGalleryContainer: {
+      overflow: 'hidden', 
+      mt: 2,
+      display: 'flex',
+      width: `calc(300px * ${imageCount})`, 
+      animation: 'slide 20s infinite linear'
+    },
+    imageBox: {
+      width: 300, 
+      height: 200, 
+      mr: 1
+    },
+    joinButton: {
+      mt: 2
+    },
+    paperStyle: {
+      margin: '20px', 
+      padding: '20px'
+    }
   };
 
-  const handleJoinNowClick = () => {
-    navigate('/register'); // Redirect to the sign-up page
-  };
+  const handleDonateClick = () => navigate('/events');
+  const handleJoinNowClick = () => navigate('/register');
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Home Page
-      </Typography>
+    <div style={styles.root}>
       <Typography variant="body1">
         Welcome to the Global Givers platform! Here, you can find volunteering events and donation opportunities from various NGOs.
       </Typography>
-      {/* Placeholder for the horizontal image */}
-      <Box sx={{ width: '100%', height: 300, backgroundColor: 'grey', mt: 2, position: 'relative' }}>
-        <Button variant="contained" color="secondary" onClick={handleDonateClick} sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+      <Box sx={styles.donateBox}>
+      <video autoPlay loop muted style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover' }}>
+          <source src="/videos/video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <Button variant="contained" color="secondary" onClick={handleDonateClick} sx={styles.donateButton}>
           Donate
         </Button>
       </Box>
-      <Paper elevation={3} sx={{ margin: '20px', padding: '20px' }}>
-        <Typography variant="h6">
-          About Global Givers
-        </Typography>
+      <Paper elevation={3} sx={styles.paperStyle}>
+        <Typography variant="h6">About Global Givers</Typography>
         <Typography variant="body1" paragraph>
           Global Givers is a dedicated platform designed to connect individuals and organizations with a wide array of non-profit organizations globally. Our mission is to empower these organizations by providing a space where they can effectively showcase their upcoming volunteering events and critical donation opportunities.
         </Typography>
@@ -46,23 +92,20 @@ const Home = () => {
           Join our growing network today to start making an impact or browse through our site to learn more about various causes and how you can be a part of positive change.
         </Typography>
       </Paper>
-      {/* Sliding gallery placeholder */}
       <Box sx={{ overflow: 'hidden', mt: 2 }}>
-        <Box sx={{
-          display: 'flex',
-          width: `calc(300px * ${imageCount})`, // Assuming 5 images, each 300px wide
-          animation: 'slide 20s infinite linear'
-        }}>
+        <Box sx={styles.imageGalleryContainer}>
           {images.map((src, index) => (
-          <Box key={index} sx={{ width: 300, height: 200, mr: 1 }}>
-            <img src={src} alt={src} style={{ width: '100%', height: '100%' }} />
-          </Box>
-        ))}
+            <Box key={index} sx={styles.imageBox}>
+              <img src={src} alt={`Slide ${index + 1}`} style={{ width: '100%', height: '100%' }} />
+            </Box>
+          ))}
         </Box>
       </Box>
-      <Button variant="contained" color="primary" onClick={handleJoinNowClick} sx={{ mt: 2 }}>
-        Join Now
-      </Button>
+      {!loggedIn && <Box sx={styles.eventsBox}>
+        <Button variant="contained" color="primary" onClick={handleJoinNowClick} sx={styles.donateButton}>
+          Join Now!
+        </Button>
+      </Box>}
       <style>
         {`
           @keyframes slide {
