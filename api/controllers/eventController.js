@@ -55,7 +55,7 @@ const unregisterUserForEvent = async (req, res) => {
 }
 
 const getRegisteredEvents = async (req, res) => {
-    const { email } = req.body;
+    const { email } = req.query;
     try {
         // Fetch the user with the list of registered events
         const user = await Users.findOne({ email }).populate('registeredEvents');
@@ -67,6 +67,7 @@ const getRegisteredEvents = async (req, res) => {
         res.status(500).send("Error fetching registered events: " + error.message);
       }
 };
+
 
 const userDonation = async (req, res) => {
     const { eventId, email, amount } = req.body;
@@ -94,7 +95,7 @@ const userDonation = async (req, res) => {
 };
 
 const getAllEventsByLocation = async (req, res) => {
-    const { city, state } = req.body;
+    const { city, state } = req.query;
     try {
         // Assuming 'Events' is the Mongoose model for events
         const events = await Events.find({

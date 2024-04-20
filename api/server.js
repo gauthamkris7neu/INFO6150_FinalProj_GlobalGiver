@@ -31,6 +31,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/organization', orgRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/files', express.static('files'));
 
 
 app.listen(PORT, () => {

@@ -101,10 +101,25 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+const getUserInfo = async (req, res) => {
+    const { email } = req.query;
+    console.log(email);
+    try {
+        const user = await Users.findOne({ email });
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting user info', error: error.message });
+    }
+}
+
 
 module.exports = {
     create,
     userLogin,
     editUser,
-    forgotPassword
+    forgotPassword,
+    getUserInfo
 };

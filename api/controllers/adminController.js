@@ -21,7 +21,7 @@ const deleteOrg = async(req, res) => {
 };
 
 const getAllOrgUsers = async(req, res) =>{
-    const {email} = req.body;
+    const {email} = req.query;
     try{
         const user = await Users.findOne({email});
         if(!user) {
