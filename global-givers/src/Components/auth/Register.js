@@ -22,6 +22,7 @@ function Register() {
       [name]: value
     }));
   };
+  const [error, setError] = useState('');
 
   const handleFileChange = (event) => {
     setFormData(prev => ({
@@ -32,7 +33,7 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Registration data:', formData);
+    setError('');
     try {
         const response = await axios.post('http://localhost:8000/api/users/register',  formData, {
             headers: {
@@ -40,10 +41,12 @@ function Register() {
             }
         });
         if (response.data) {
-          navigate('/');
+          navigate('/login');
+        } else {
+          setError('Please Check the Entered Details')
         }
     } catch (err) {
-        console.log(err);
+        setError(err.response.data.message);
     }
     setOpen(true);
   };
@@ -145,6 +148,7 @@ function Register() {
               </label>
             </>
           )}
+          {error && <Typography color="error">{error}</Typography>}
           <Button
             type="submit"
             fullWidth

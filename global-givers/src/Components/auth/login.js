@@ -10,6 +10,7 @@ function Login() {
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const user = useSelector(state => state);
   const dispatch = useDispatch();
@@ -25,14 +26,17 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('Login attempt with:', credentials);
+    setError('');
     try {
       const response = await axios.post('http://localhost:8000/api/users/login',  credentials);
       if (response.data) {
         dispatch(login({email: credentials.email, userType: response.data.userType}));
         navigate('/');
+      } else {
+        setError('Invalid credentials');
       }
   } catch (err) {
-      console.log(err);
+    setError(err.response && err.response.data ? err.response.data.message : 'An error occurred');
   }
   };
 
@@ -52,6 +56,7 @@ function Login() {
             label="Username"
             name="email"
             autoComplete="email"
+            type='email'
             autoFocus
             value={credentials.email}
             onChange={handleChange}
@@ -69,6 +74,7 @@ function Login() {
             value={credentials.password}
             onChange={handleChange}
           />
+          {error && <Typography color="error">{error}</Typography>}
           <Button
             type="submit"
             fullWidth

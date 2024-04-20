@@ -13,7 +13,8 @@ import DonationForm from './Components/donations/DonationForm';
 import DonationList from './Components/donations/DonationList';
 import Login from './Components/auth/login';                  // Add Login and Register
 import Register from './Components/auth/Register';
-import ForgotPassword from './Components/auth/ForgotPassword'; // Assuming you have this
+import ForgotPassword from './Components/auth/ForgotPassword';
+import CreateEventPage from './Components/organization/CreateEvent'; // Assuming you have this
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from './actions/loginActions';
 
@@ -34,7 +35,12 @@ const App = () => {
           {loggedIn &&
             <>
               {userType === 'organization' &&
-                <></>
+                <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/createEvents" element={loggedIn ? <CreateEventPage/> : <Navigate replace to="/login" />} />
+                <Route path="/profile" element={loggedIn ? <Profile /> : <Navigate replace to="/login" />} />
+                <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
+              </Routes>
               }
               {userType === 'donor' &&
                 <Routes>

@@ -147,7 +147,7 @@ const Events = () => {
       setDialogOpen(true);
       setDonateDialogOpen(false);
       setDonationAmount('');
-      fetchEvents();
+      getLocationFromIP();
     } catch (error) {
       setDialogContent(error.response.data || 'An error occurred during donation.');
       setDialogOpen(true);

@@ -52,22 +52,24 @@ const Navbar = ({ isLoggedIn, handleLogout, userType }) => {
           Global Givers
         </Typography>
         {renderLinkButton("Home", "/", styles.button)}
+        {isLoggedIn ? (
+          <>
+            {userType !== 'admin' ? 
+        <>
         {userType === 'organization' ? (
           <>
-            {renderLinkButton("Manage Events", "/events/manage", styles.button)}
-            {renderLinkButton("Manage Donations", "/donations/manage", styles.button)}
+            {renderLinkButton("Create Event", "/createEvents", styles.button)}
+            {renderLinkButton("Profile", "/profile", styles.button)}
           </>
         ) : (
           <>
-          </>
-        )}
-        {isLoggedIn ? (
-          <>
-            {userType !== 'admin' ? (
-              <>
                 {renderLinkButton("Events", "/events", styles.button)}
                 {renderLinkButton("Profile", "/profile", styles.button)}
-              </>)
+              </>
+        )}
+        </>
+
+
               : (<></>)}
             {renderLinkButton("Logout", "#", styles.button, handleLogout)}
           </>

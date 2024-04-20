@@ -44,10 +44,12 @@ function Profile() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/events/getRegisteredEvents', {
+        const url = userType === 'organization' ? 'http://localhost:8000/api/organization/getAll' : 'http://localhost:8000/api/events/getRegisteredEvents'
+        const response = await axios.get(url, {
           params: {email: user.email}
         });
-        setEvents(response.data);
+        console.log('Fetched events:', response.data);
+        setEvents(userType === 'organization' ? response.data?.events : response.data);
       } catch (error) {
         console.error("Failed to fetch events:", error);
       }

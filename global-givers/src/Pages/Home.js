@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { loggedIn } = useSelector(state => state.login);
+  const { loggedIn, user } = useSelector(state => state.login);
+  const userType = user ? user.userType : null;
   const imageCount = 5;
   const images = Array.from({ length: imageCount }, (_, i) => `/images/Image${i + 1}.png`);
   
@@ -62,6 +63,7 @@ const Home = () => {
 
   const handleDonateClick = () => navigate('/events');
   const handleJoinNowClick = () => navigate('/register');
+  const handleCreateEventClick = () => navigate('/createEvents');
 
   return (
     <div style={styles.root}>
@@ -73,9 +75,17 @@ const Home = () => {
           <source src="/videos/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+        {userType === 'organization' ? (<>
+          <Button variant="contained" color="secondary" onClick={handleCreateEventClick} sx={styles.donateButton}>
+          Create Event
+         </Button>
+        </>):
+        (<>
         <Button variant="contained" color="secondary" onClick={handleDonateClick} sx={styles.donateButton}>
           Donate
         </Button>
+        </>)}
+        
       </Box>
       <Paper elevation={3} sx={styles.paperStyle}>
         <Typography variant="h6">About Global Givers</Typography>
