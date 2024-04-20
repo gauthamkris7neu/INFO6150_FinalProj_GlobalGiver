@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Grid, MenuItem, Select, FormControl, InputLabel, Link, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 function Register() {
   const [formData, setFormData] = useState({
     userType: '',
-    username: '',
+    fullName: '',
     email: '',
     password: '',
     organizationName: '',
-    certificate: null
+    orgFile: null
   });
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData(prev => ({
@@ -24,14 +26,25 @@ function Register() {
   const handleFileChange = (event) => {
     setFormData(prev => ({
       ...prev,
-      certificate: event.target.files[0]
+      orgFile: event.target.files[0]
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('Registration data:', formData);
-    // Here you would typically integrate this data submission with your API
+    try {
+        const response = await axios.post('http://localhost:8000/api/users/register',  formData, {
+            headers: {
+                'Content-Type' : 'multipart/form-data'
+            }
+        });
+        if (response.data) {
+          navigate('/');
+        }
+    } catch (err) {
+        console.log(err);
+    }
     setOpen(true);
   };
 
@@ -63,7 +76,7 @@ function Register() {
               label="Register As"
               onChange={handleChange}
             >
-              <MenuItem value="individual">Individual Volunteer/Donor</MenuItem>
+              <MenuItem value="donor">Individual Volunteer/Donor</MenuItem>
               <MenuItem value="organization">Organization</MenuItem>
             </Select>
           </FormControl>
@@ -72,11 +85,11 @@ function Register() {
             margin="normal"
             required
             fullWidth
-            id="username"
+            id="fullName"
             label="Username"
-            name="username"
-            autoComplete="username"
-            value={formData.username}
+            name="fullName"
+            autoComplete="fullName"
+            value={formData.fullName}
             onChange={handleChange}
           />
           <TextField
