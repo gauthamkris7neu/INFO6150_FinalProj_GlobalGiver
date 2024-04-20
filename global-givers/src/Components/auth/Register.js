@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Grid, MenuItem, Select, FormControl, InputLabel, Link, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import { validateUserRegistration, validateOrganizationRegistration } from 'C:/Users/Urmip/git/INFO6150_FinalProj_GlobalGiver/global-givers/src/Utils/validation.js'; // Import validation functions
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -13,15 +14,24 @@ function Register() {
     organizationName: '',
     orgFile: null
   });
+  const [errors, setErrors] = useState({});
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  
+    // Clear errors for the field being updated
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: undefined // or null or an empty string
+    }));
   };
+  
 
   const handleFileChange = (event) => {
     setFormData(prev => ({
@@ -32,18 +42,32 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Registration data:', formData);
+
+    // Validate form data
+    let validationErrors = {};
+    if (formData.userType === 'organization') {
+      validationErrors = validateOrganizationRegistration(formData, formData.orgFile);
+    } else {
+      validationErrors = validateUserRegistration(formData);
+    }
+
+    // If there are validation errors, setErrors and return
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
-        const response = await axios.post('http://localhost:8000/api/users/register',  formData, {
-            headers: {
-                'Content-Type' : 'multipart/form-data'
-            }
-        });
-        if (response.data) {
-          navigate('/');
+      const response = await axios.post('http://localhost:8000/api/users/register', formData, {
+        headers: {
+          'Content-Type' : 'multipart/form-data'
         }
+      });
+      if (response.data) {
+        navigate('/');
+      }
     } catch (err) {
-        console.log(err);
+      console.log(err);
     }
     setOpen(true);
   };
@@ -80,6 +104,8 @@ function Register() {
               <MenuItem value="organization">Organization</MenuItem>
             </Select>
           </FormControl>
+          {/* Render error messages */}
+          {errors.userType && <Typography color="error">{errors.userType}</Typography>}
           <TextField
             variant="outlined"
             margin="normal"
@@ -92,6 +118,8 @@ function Register() {
             value={formData.fullName}
             onChange={handleChange}
           />
+          {/* Render error messages */}
+          {errors.fullName && <Typography color="error">{errors.fullName}</Typography>}
           <TextField
             variant="outlined"
             margin="normal"
@@ -104,6 +132,8 @@ function Register() {
             value={formData.email}
             onChange={handleChange}
           />
+          {/* Render error messages */}
+          {errors.email && <Typography color="error">{errors.email}</Typography>}
           <TextField
             variant="outlined"
             margin="normal"
@@ -117,6 +147,8 @@ function Register() {
             value={formData.password}
             onChange={handleChange}
           />
+          {/* Render error messages */}
+          {errors.password && <Typography color="error">{errors.password}</Typography>}
           {formData.userType === 'organization' && (
             <>
               <TextField
@@ -130,6 +162,8 @@ function Register() {
                 value={formData.organizationName}
                 onChange={handleChange}
               />
+              {/* Render error messages */}
+              {errors.name && <Typography color="error">{errors.name}</Typography>}
               <input
                 accept="image/*"
                 style={{ display: 'none' }}
@@ -143,6 +177,8 @@ function Register() {
                   Upload Certificate
                 </Button>
               </label>
+              {/* Render error messages */}
+              {errors.certificate && <Typography color="error">{errors.certificate}</Typography>}
             </>
           )}
           <Button
