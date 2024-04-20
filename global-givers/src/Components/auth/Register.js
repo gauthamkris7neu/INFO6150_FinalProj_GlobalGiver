@@ -31,11 +31,7 @@ function Register() {
       [name]: undefined // or null or an empty string
     }));
   };
-<<<<<<< HEAD
-  const [error, setError] = useState('');
-=======
   
->>>>>>> urmi
 
   const handleFileChange = (event) => {
     setFormData(prev => ({
@@ -46,19 +42,6 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-<<<<<<< HEAD
-    setError('');
-    try {
-        const response = await axios.post('http://localhost:8000/api/users/register',  formData, {
-            headers: {
-                'Content-Type' : 'multipart/form-data'
-            }
-        });
-        if (response.data) {
-          navigate('/login');
-        } else {
-          setError('Please Check the Entered Details')
-=======
 
     // Validate form data
     let validationErrors = {};
@@ -78,18 +61,13 @@ function Register() {
       const response = await axios.post('http://localhost:8000/api/users/register', formData, {
         headers: {
           'Content-Type' : 'multipart/form-data'
->>>>>>> urmi
         }
       });
       if (response.data) {
         navigate('/');
       }
     } catch (err) {
-<<<<<<< HEAD
-        setError(err.response.data.message);
-=======
       console.log(err);
->>>>>>> urmi
     }
     setOpen(true);
   };
