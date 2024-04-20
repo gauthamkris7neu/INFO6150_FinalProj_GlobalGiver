@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../Actions/actions';
 
 function Login() {
   const [credentials, setCredentials] = useState({
-    userType: 'individual',  // Default to 'individual'
-    username: '',
+    email: '',
     password: ''
   });
+  const navigate = useNavigate();
+  const user = useSelector(state => state);
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -16,11 +22,18 @@ function Login() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Authentication logic should take into account the userType
     console.log('Login attempt with:', credentials);
-    // You would typically call a login function from your auth API utility here
+    try {
+      const response = await axios.post('http://localhost:8000/api/users/login',  credentials);
+      if (response.data) {
+        dispatch(setUser({userType: response.data.userType, email: credentials.email}));
+        navigate('/');
+      }
+  } catch (err) {
+      console.log(err);
+  }
   };
 
   return (
@@ -30,31 +43,17 @@ function Login() {
           Sign in
         </Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: 1 }}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="user-type-select-label">Login as</InputLabel>
-            <Select
-              labelId="user-type-select-label"
-              id="userType"
-              name="userType"
-              value={credentials.userType}
-              label="Login as"
-              onChange={handleChange}
-            >
-              <MenuItem value="individual">Individual Volunteer/Donor</MenuItem>
-              <MenuItem value="organization">Organization</MenuItem>
-            </Select>
-          </FormControl>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="username"
+            id="email"
             label="Username"
-            name="username"
-            autoComplete="username"
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={credentials.username}
+            value={credentials.email}
             onChange={handleChange}
           />
           <TextField
