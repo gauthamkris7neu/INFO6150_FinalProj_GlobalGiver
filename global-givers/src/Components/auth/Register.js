@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Grid, MenuItem, Select, FormC
 import MuiAlert from '@mui/material/Alert';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { validateUserRegistration, validateOrganizationRegistration } from 'C:/Users/Urmip/git/INFO6150_FinalProj_GlobalGiver/global-givers/src/Utils/validation.js'; // Import validation functions
+import { validateUserRegistration, validateOrganizationRegistration } from '../../Utils/validation'; // Import validation functions
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -181,7 +181,6 @@ function Register() {
               {errors.certificate && <Typography color="error">{errors.certificate}</Typography>}
             </>
           )}
-          {error && <Typography color="error">{error}</Typography>}
           <Button
             type="submit"
             fullWidth
