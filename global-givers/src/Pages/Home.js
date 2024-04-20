@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
+  const imageCount = 5;
+  const images = Array.from({ length: imageCount }, (_, i) => `/images/Image${i + 1}.png`);
 
   const handleDonateClick = () => {
     navigate('/donations'); // Redirect to the donations page
@@ -48,22 +50,19 @@ const Home = () => {
       <Box sx={{ overflow: 'hidden', mt: 2 }}>
         <Box sx={{
           display: 'flex',
-          width: 'calc(300px * 5)', // Assuming 5 images, each 300px wide
+          width: `calc(300px * ${imageCount})`, // Assuming 5 images, each 300px wide
           animation: 'slide 20s infinite linear'
         }}>
-          {/* Placeholder divs for images */}
-          <Box sx={{ width: 300, height: 200, backgroundColor: 'lightblue', mr: 1 }}></Box>
-          <Box sx={{ width: 300, height: 200, backgroundColor: 'lightcoral', mr: 1 }}></Box>
-          <Box sx={{ width: 300, height: 200, backgroundColor: 'lightgreen', mr: 1 }}></Box>
-          <Box sx={{ width: 300, height: 200, backgroundColor: 'lightyellow', mr: 1 }}></Box>
-          <Box sx={{ width: 300, height: 200, backgroundColor: 'lightgrey' }}></Box>
+          {images.map((src, index) => (
+          <Box key={index} sx={{ width: 300, height: 200, mr: 1 }}>
+            <img src={src} alt={src} style={{ width: '100%', height: '100%' }} />
+          </Box>
+        ))}
         </Box>
       </Box>
-      {/* Join Now Button */}
       <Button variant="contained" color="primary" onClick={handleJoinNowClick} sx={{ mt: 2 }}>
         Join Now
       </Button>
-      {/* Add keyframes for sliding effect */}
       <style>
         {`
           @keyframes slide {
